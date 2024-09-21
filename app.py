@@ -58,7 +58,7 @@ def registrar():
         con.commit()
 
         # Enviar datos a través de Pusher
-        pusher_client.trigger("registrosNombre", "registroAsunto", args)
+        pusher_client.trigger("Nombre_Curso", "Telefono", args)
 
         return jsonify(args), 200
 
