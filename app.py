@@ -116,3 +116,18 @@ def mostrar_registros():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+@app.route("/eliminar/<int:id>", methods=["POST"])
+def eliminar(id):
+    con = get_db_connection()
+    cursor = con.cursor()
+    
+    sql = "DELETE FROM tst0_cursos WHERE Id_Cursos = %s"
+    cursor.execute(sql, (id,))
+    
+    con.commit()
+    cursor.close()
+    con.close()
+    
+    return redirect("/registros")  # Redirige a la lista de registros
+
