@@ -52,7 +52,7 @@ def registrar():
 
     try:
         cursor = con.cursor()
-        sql = "INSERT INTO tst0_cursos (Nombre_Cursos, Telefono) VALUES (%s, %s)"
+        sql = "INSERT INTO tst0_cursos (Nombre_Curso, Telefono) VALUES (%s, %s)"
         val = (args["Nombre"], args["Telefono"])
         cursor.execute(sql, val)
         con.commit()
@@ -101,7 +101,7 @@ def mostrar_registros():
 
     try:
         cursor = con.cursor(dictionary=True)
-        cursor.execute("SELECT Nombre_Cursos, Telefono FROM tst0_cursos")
+        cursor.execute("SELECT Nombre_Curso, Telefono FROM tst0_cursos")
         registros = cursor.fetchall()
 
         return render_template("inscripcion.html", registros=registros)
