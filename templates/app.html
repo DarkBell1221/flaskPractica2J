@@ -56,6 +56,22 @@
 
             <button type="submit" class="btn btn-primary">Solicitar Inscripción</button>
         </form>
+
+        <!-- Tabla de registros -->
+        <h2 class="my-4">Registros de Inscripciones</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre y Apellido</th>
+                    <th>Curso</th>
+                    <th>Teléfono</th>
+                </tr>
+            </thead>
+            <tbody id="tablaRegistros">
+                <!-- Aquí se llenarán los registros dinámicamente con JavaScript -->
+            </tbody>
+        </table>
     </div>
 
     <!-- Añadir Bootstrap JS -->
@@ -64,6 +80,7 @@
     <!-- Validación del formulario con jQuery Validation -->
     <script>
         $(document).ready(function() {
+            // Validación del formulario
             $("#formInscripcion").validate({
                 rules: {
                     nombreCompleto: {
@@ -111,12 +128,35 @@
                     error.appendTo(element.closest(".form-group"));
                 }
             });
-        });
 
-        // Añadir un método personalizado para solo letras
-        $.validator.addMethod("lettersonly", function(value, element) {
-            return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
-        }, "Solo se permiten letras y espacios.");
+            // Método personalizado para validar letras
+            $.validator.addMethod("lettersonly", function(value, element) {
+                return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
+            }, "Solo se permiten letras y espacios.");
+
+            // Llenar la tabla con los registros desde el servidor (simulado con datos ficticios)
+            function cargarRegistros() {
+                const registros = [
+                    {id: 1, nombre: "Juan Pérez", curso: "Curso 1", telefono: "1234567890"},
+                    {id: 2, nombre: "María Gómez", curso: "Curso 2", telefono: "0987654321"}
+                ];
+
+                let tabla = $("#tablaRegistros");
+                registros.forEach(function(registro) {
+                    let fila = `<tr>
+                        <td>${registro.id}</td>
+                        <td>${registro.nombre}</td>
+                        <td>${registro.curso}</td>
+                        <td>${registro.telefono}</td>
+                    </tr>`;
+                    tabla.append(fila);
+                });
+            }
+
+            // Llamamos a la función para cargar registros
+            cargarRegistros();
+        });
     </script>
 </body>
 </html>
+
