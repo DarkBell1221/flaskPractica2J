@@ -70,3 +70,16 @@ def buscar():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+@app.route("/registros")
+def mostrar_registros():
+    if not con.is_connected():
+        con.reconnect()
+    
+    cursor = con.cursor(dictionary=True)  # Utiliza dictionary=True para devolver los resultados como diccionarios
+    cursor.execute("SELECT nombreCompleto, curso, telefono FROM tst0_cursos")
+    registros = cursor.fetchall()
+
+    con.close()
+    
+    return render_template("inscripcion.html", registros=registros)
