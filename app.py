@@ -3,7 +3,7 @@ import mysql.connector
 import pusher
 from mysql.connector import Error
 
-# Definir función para manejar la conexión a la base de datos
+
 def get_db_connection():
     try:
         return mysql.connector.connect(
@@ -18,7 +18,7 @@ def get_db_connection():
 
 app = Flask(__name__)
 
-# Pusher configuration
+
 pusher_client = pusher.Pusher(
     app_id='1868490',
     key='e1d8c501f1496bf4614e',
@@ -57,7 +57,7 @@ def registrar():
         cursor.execute(sql, val)
         con.commit()
 
-        # Enviar datos a través de Pusher
+   
         pusher_client.trigger("Nombre_Curso", "Telefono", args)
 
         return jsonify(args), 200
