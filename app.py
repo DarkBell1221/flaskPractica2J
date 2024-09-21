@@ -55,14 +55,14 @@ def registrar():
         con.reconnect()
     cursor = con.cursor()
     
-    sql = "INSERT INTO sensor_log (Temperatura, Humedad, Fecha_Hora) VALUES (%s, %s, %s)"
-    val = (args["temperatura"], args["humedad"], datetime.datetime.now(pytz.timezone("America/Matamoros")))
+    sql = "INSERT INTO tst0_cursos (Nombre, Asunto) VALUES (%s, %s, %)"
+    val = (args["Nombre"], args["Asunto"])
     cursor.execute(sql, val)
 
     con.commit()
     con.close()
  
-    pusher_client.trigger("registrosTiempoReal", "registroTiempoReal", args)
+    pusher_client.trigger("registrosNombre", "registroAsunto", args)
     return args
 
 @app.route("/buscar")
@@ -70,7 +70,7 @@ def buscar():
     if not con.is_connected():
         con.reconnect()
     cursor = con.cursor()
-    cursor.execute("SELECT * FROM sensor_log ORDER BY Id_Log DESC")
+    cursor.execute("SELECT * FROM tst0_cursos ORDER BY Id_Log DESC")
     registros = cursor.fetchall()
 
     con.close()
