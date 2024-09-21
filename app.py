@@ -117,7 +117,7 @@ def mostrar_registros():
 if __name__ == "__main__":
     app.run(debug=True)
 
-@app.route("/eliminar/<int:id>", methods=["POST"])
+@app.route("/registros>", methods=["POST"])
 def eliminar(id):
     con = get_db_connection()
     cursor = con.cursor()
