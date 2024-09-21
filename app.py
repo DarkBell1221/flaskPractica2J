@@ -122,7 +122,7 @@ def eliminar(id):
     con = get_db_connection()
     cursor = con.cursor()
     
-    sql = "DELETE FROM tst0_cursos WHERE Id_Cursos = %s"
+    sql = "DELETE FROM tst0_cursos WHERE Id_Curso = %s"
     cursor.execute(sql, (id,))
     
     con.commit()
