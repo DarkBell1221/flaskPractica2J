@@ -14,17 +14,25 @@
                 <tr>
                     <th>Nombre del Curso</th>
                     <th>Teléfono</th>
+                    <th>Acciones</th> <!-- Columna para acciones -->
                 </tr>
             </thead>
             <tbody>
                 {% for registro in registros %}
                     <tr>
-                        <td>{{ registro.Nombre_Curso }}</td>
+                        <td>{{ registro.Nombre_Cursos }}</td>
                         <td>{{ registro.Telefono }}</td>
+                        <td>
+                            <!-- Formulario para eliminar el registro -->
+                            <form action="/eliminar/{{ registro.Id_Cursos }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <a href="/" class="btn btn-primary mt-3">Regresar</a> <!-- Botón para regresar -->
     </div>
 </body>
 </html>
