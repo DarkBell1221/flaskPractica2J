@@ -127,7 +127,7 @@ def eliminar(id):
 
     try:
         cursor = con.cursor()
-        sql = "DELETE FROM tst0_cursos WHERE Id_Cursos = %s"
+        sql = "DELETE FROM tst0_cursos WHERE Id_Curso = %s"
         cursor.execute(sql, (id,))
         con.commit()
         return redirect("/registros")  # Redirige a la lista de registros
