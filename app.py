@@ -117,16 +117,28 @@ def mostrar_registros():
 if __name__ == "__main__":
     app.run(debug=True)
 
+
 @app.route("/eliminar/<int:id>", methods=["POST"])
 def eliminar(id):
     con = get_db_connection()
-    cursor = con.cursor()
-    
-    sql = "DELETE FROM tst0_cursos WHERE Id_Curso = %s"
-    cursor.execute(sql, (id,))
-    
-    con.commit()
-    cursor.close()
-    con.close()
-    
-    return redirect("/registros")  # Redirige a la lista de registros
+
+    if con is None:
+        return "Error en la conexión a la base de datos", 500
+
+    try:
+        cursor = con.cursor()
+        sql = "DELETE FROM tst0_cursos WHERE Id_Cursos = %s"
+        cursor.execute(sql, (id,))
+        con.commit()
+        return redirect("/registros")  # Redirige a la lista de registros
+
+    except Error as e:
+        print(f"Error al eliminar registro: {e}")
+        return "Error al eliminar registro", 500
+
+    finally:
+        cursor.close()
+        con.close()
+
+if __name__ == "__main__":
+    app.run(debug=True)
