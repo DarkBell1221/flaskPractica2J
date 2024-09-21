@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, jsonify, redirect
+from flask import Flask, render_template, request, jsonify
 import mysql.connector
 import pusher
 from mysql.connector import Error
+
 
 def get_db_connection():
     try:
@@ -16,6 +17,7 @@ def get_db_connection():
         return None
 
 app = Flask(__name__)
+
 
 pusher_client = pusher.Pusher(
     app_id='1868490',
@@ -55,7 +57,9 @@ def registrar():
         cursor.execute(sql, val)
         con.commit()
 
+   
         pusher_client.trigger("Nombre_Curso", "Telefono", args)
+
         return jsonify(args), 200
 
     except Error as e:
@@ -97,7 +101,7 @@ def mostrar_registros():
 
     try:
         cursor = con.cursor(dictionary=True)
-        cursor.execute("SELECT Id_Cursos, Nombre_Curso, Telefono FROM tst0_cursos")
+        cursor.execute("SELECT Nombre_Curso, Telefono FROM tst0_cursos")
         registros = cursor.fetchall()
 
         return render_template("inscripcion.html", registros=registros)
@@ -110,26 +114,19 @@ def mostrar_registros():
         cursor.close()
         con.close()
 
+if __name__ == "__main__":
+    app.run(debug=True)
+
 @app.route("/eliminar/<int:id>", methods=["POST"])
 def eliminar(id):
     con = get_db_connection()
-
-    if con is None:
-        return "Error en la conexión a la base de datos", 500
-
-    try:
-        cursor = con.cursor()
-        sql = "DELETE FROM tst0_cursos WHERE Id_Cursos = %s"
-        cursor.execute(sql, (id,))
-        con.commit()
-    except Error as e:
-        print(f"Error al eliminar registro: {e}")
-        return "Error al eliminar registro", 500
-    finally:
-        cursor.close()
-        con.close()
-
+    cursor = con.cursor()
+    
+    sql = "DELETE FROM tst0_cursos WHERE Id_Cursos = %s"
+    cursor.execute(sql, (id,))
+    
+    con.commit()
+    cursor.close()
+    con.close()
+    
     return redirect("/registros")  # Redirige a la lista de registros
-
-if __name__ == "__main__":
-    app.run(debug=True)
