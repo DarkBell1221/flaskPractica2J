@@ -43,7 +43,7 @@ def alumnosGuardar():
 @app.route("/registrar", methods=["GET"])
 def registrar():
     args = request.args
-   pusher_client = pusher.Pusher(
+  pusher_client = pusher.Pusher(
   app_id='1868490',
   key='e1d8c501f1496bf4614e',
   secret='7f77d21d3627c15b058c',
