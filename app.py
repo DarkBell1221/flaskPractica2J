@@ -42,32 +42,29 @@ def alumnosGuardar():
     
     return f"Matrícula: {matricula} Nombre y Apellido: {nombreapellido}"
 
-@app.route("/registrar", methods=["POST"])  # Cambia el método a POST
+@app.route("/registrar", methods=["GET"])
 def registrar():
-    nombre = request.form.get("Nombre")
-    telefono = request.form.get("Telefono")
-    
+    args = request.args
     con = get_db_connection()
 
     if con is None:
-        return jsonify({"error": "Error en la conexión a la base de datos"}), 500
+        return "Error en la conexión a la base de datos", 500
 
     try:
         cursor = con.cursor()
         sql = "INSERT INTO tst0_cursos (Nombre_Curso, Telefono) VALUES (%s, %s)"
-        val = (nombre, telefono)
+        val = (args["Nombre"], args["Telefono"])
         cursor.execute(sql, val)
         con.commit()
 
-        # Trigger en Pusher para actualizar en tiempo real
-        data = {"Nombre_Curso": nombre, "Telefono": telefono}
-        pusher_client.trigger("cursos-channel", "curso-registrado", data)
+        # Disparar evento con Pusher
+        pusher_client.trigger("Nombre_Curso", "Telefono", args)
 
-        return jsonify({"success": "Curso registrado con éxito"}), 200
+        return jsonify(args), 200
 
     except Error as e:
         print(f"Error al insertar en la base de datos: {e}")
-        return jsonify({"error": "Error al registrar datos"}), 500
+        return "Error al registrar datos", 500
 
     finally:
         cursor.close()
