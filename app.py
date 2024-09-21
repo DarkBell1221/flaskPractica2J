@@ -7,7 +7,7 @@ from flask import request
 import pusher
 
 import mysql.connector
-import datetime
+
 import pytz
 
 con = mysql.connector.connect(
