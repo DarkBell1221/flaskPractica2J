@@ -10,20 +10,24 @@
 
 <h1>Lista de Cursos</h1>
 <div id="registros-container">
-    {% for registro in registros %}
-    <div id="registro-{{ registro['Id_Cursos'] }}">
-        <p>Nombre del Curso: {{ registro['Nombre_Curso'] }}</p>
-        <p>Teléfono: {{ registro['Telefono'] }}</p>
-        <form action="/editar_registro/{{ registro['Id_Cursos'] }}" method="POST">
-            <input type="text" name="nombre_curso" value="{{ registro['Nombre_Curso'] }}">
-            <input type="text" name="telefono" value="{{ registro['Telefono'] }}">
-            <button type="submit">Guardar cambios</button>
-        </form>
-        <form action="/eliminar/{{ registro['Telefono'] }}" method="POST">
-            <button type="submit">Eliminar</button>
-        </form>
-    </div>
-    {% endfor %}
+    {% if registros %}
+        {% for registro in registros %}
+        <div id="registro-{{ registro['Id_Cursos'] }}">
+            <p>Nombre del Curso: {{ registro['Nombre_Curso'] }}</p>
+            <p>Teléfono: {{ registro['Telefono'] }}</p>
+            <form action="/editar_registro/{{ registro['Id_Cursos'] }}" method="POST">
+                <input type="text" name="nombre_curso" value="{{ registro['Nombre_Curso'] }}">
+                <input type="text" name="telefono" value="{{ registro['Telefono'] }}">
+                <button type="submit">Guardar cambios</button>
+            </form>
+            <form action="/eliminar/{{ registro['Telefono'] }}" method="POST">
+                <button type="submit">Eliminar</button>
+            </form>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No hay registros disponibles.</p>
+    {% endif %}
 </div>
 
 <script>
