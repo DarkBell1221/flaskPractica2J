@@ -42,6 +42,7 @@ def alumnosGuardar():
     
     return f"Matrícula: {matricula} Nombre y Apellido: {nombreapellido}"
 
+# Registrar un nuevo curso y emitir evento con Pusher
 @app.route("/registrar", methods=["GET"])
 def registrar():
     args = request.args
@@ -57,8 +58,11 @@ def registrar():
         cursor.execute(sql, val)
         con.commit()
 
-        # Disparar evento con Pusher
-        pusher_client.trigger("Nombre_Curso", "Telefono", args)
+        # Disparar evento con Pusher al agregar un nuevo registro
+        pusher_client.trigger("registros", "nuevo", {
+            "nombre_curso": args["Nombre"],
+            "telefono": args["Telefono"]
+        })
 
         return jsonify(args), 200
 
@@ -70,6 +74,7 @@ def registrar():
         cursor.close()
         con.close()
 
+# Buscar registros
 @app.route("/buscar")
 def buscar():
     con = get_db_connection()
@@ -92,6 +97,7 @@ def buscar():
         cursor.close()
         con.close()
 
+# Mostrar registros
 @app.route("/registros")
 def mostrar_registros():
     con = get_db_connection()
@@ -101,7 +107,7 @@ def mostrar_registros():
 
     try:
         cursor = con.cursor(dictionary=True)
-        cursor.execute("SELECT Nombre_Curso, Telefono FROM tst0_cursos")
+        cursor.execute("SELECT Id_Cursos, Nombre_Curso, Telefono FROM tst0_cursos")
         registros = cursor.fetchall()
 
         return render_template("inscripcion.html", registros=registros)
@@ -114,7 +120,43 @@ def mostrar_registros():
         cursor.close()
         con.close()
 
-# Eliminar por número de teléfono
+# Editar un registro existente y emitir evento con Pusher
+@app.route("/editar_registro/<int:id>", methods=["POST"])
+def editar_registro(id):
+    nuevo_nombre = request.form["nombre_curso"]
+    nuevo_telefono = request.form["telefono"]
+
+    con = get_db_connection()
+    if con is None:
+        return "Error en la conexión a la base de datos", 500
+
+    try:
+        cursor = con.cursor()
+        cursor.execute("""
+            UPDATE tst0_cursos
+            SET Nombre_Curso = %s, Telefono = %s
+            WHERE Id_Cursos = %s
+        """, (nuevo_nombre, nuevo_telefono, id))
+        con.commit()
+
+        # Emitimos el evento con Pusher para notificar la edición
+        pusher_client.trigger("registros", "editar", {
+            "id": id,
+            "nombre_curso": nuevo_nombre,
+            "telefono": nuevo_telefono
+        })
+
+        return redirect("/registros")
+
+    except Error as e:
+        print(f"Error al editar el registro: {e}")
+        return "Error al editar el registro", 500
+
+    finally:
+        cursor.close()
+        con.close()
+
+# Eliminar un registro por número de teléfono y emitir evento con Pusher
 @app.route("/eliminar/<string:telefono>", methods=["POST"])
 def eliminar(telefono):
     con = get_db_connection()
@@ -127,7 +169,11 @@ def eliminar(telefono):
         sql = "DELETE FROM tst0_cursos WHERE Telefono = %s"
         cursor.execute(sql, (telefono,))
         con.commit()
-        return redirect("/registros")  # Redirige a la lista de registros
+
+        # Emitimos el evento con Pusher para notificar la eliminación
+        pusher_client.trigger("registros", "eliminar", {"telefono": telefono})
+
+        return redirect("/registros")
 
     except Error as e:
         print(f"Error al eliminar registro: {e}")
