@@ -110,6 +110,9 @@ def mostrar_registros():
         cursor.execute("SELECT Id_Cursos, Nombre_Curso, Telefono FROM tst0_cursos")
         registros = cursor.fetchall()
 
+        # Debug: Ver los registros en la consola
+        print(f"Registros recuperados: {registros}")
+
         return render_template("inscripcion.html", registros=registros)
 
     except Error as e:
