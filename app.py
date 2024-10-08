@@ -84,7 +84,7 @@ def buscar():
 
     try:
         cursor = con.cursor()
-        cursor.execute("SELECT * FROM tst0_cursos ORDER BY Id_Curso DESC")
+        cursor.execute("SELECT * FROM tst0_cursos ORDER BY Id_Cursos DESC")
         registros = cursor.fetchall()
 
         return jsonify({"registros": registros}), 200
@@ -107,7 +107,7 @@ def mostrar_registros():
 
     try:
         cursor = con.cursor(dictionary=True)
-        cursor.execute("SELECT Id_Curso, Nombre_Curso, Telefono FROM tst0_cursos")
+        cursor.execute("SELECT Id_Cursos, Nombre_Curso, Telefono FROM tst0_cursos")
         registros = cursor.fetchall()
 
         # Debug: Ver los registros en la consola
@@ -138,7 +138,7 @@ def editar_registro(id):
         cursor.execute("""
             UPDATE tst0_cursos
             SET Nombre_Curso = %s, Telefono = %s
-            WHERE Id_Curso = %s
+            WHERE Id_Cursos = %s
         """, (nuevo_nombre, nuevo_telefono, id))
         con.commit()
 
