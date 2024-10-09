@@ -6,12 +6,13 @@ from mysql.connector import Error
 # Conexión a la base de datos
 def get_db_connection():
     try:
-        return mysql.connector.connect(
+        con = mysql.connector.connect(
             host="185.232.14.52",
             database="u760464709_tst_sep",
             user="u760464709_tst_sep_usr",
             password="dJ0CIAFF="
         )
+        return con  # Devolver la conexión en caso de éxito
     except Error as e:
         print(f"Error conectando a la base de datos: {e}")
         return None
@@ -84,7 +85,7 @@ def buscar():
 
     try:
         cursor = con.cursor()
-        cursor.execute("SELECT * FROM tst0_cursos ORDER BY Id_Cursos DESC")
+        cursor.execute("SELECT * FROM tst0_cursos ORDER BY Id_Curso DESC")
         registros = cursor.fetchall()
 
         return jsonify({"registros": registros}), 200
@@ -107,7 +108,7 @@ def mostrar_registros():
 
     try:
         cursor = con.cursor(dictionary=True)
-        cursor.execute("SELECT Id_Cursos, Nombre_Curso, Telefono FROM tst0_cursos")
+        cursor.execute("SELECT Id_Curso, Nombre_Curso, Telefono FROM tst0_cursos")
         registros = cursor.fetchall()
 
         # Debug: Ver los registros en la consola
@@ -138,7 +139,7 @@ def editar_registro(id):
         cursor.execute("""
             UPDATE tst0_cursos
             SET Nombre_Curso = %s, Telefono = %s
-            WHERE Id_Cursos = %s
+            WHERE Id_Curso = %s
         """, (nuevo_nombre, nuevo_telefono, id))
         con.commit()
 
@@ -159,9 +160,9 @@ def editar_registro(id):
         cursor.close()
         con.close()
 
-# Eliminar un registro por número de teléfono y emitir evento con Pusher
-@app.route("/eliminar/<string:telefono>", methods=["POST"])
-def eliminar(telefono):
+# Eliminar un registro por Id_Curso y emitir evento con Pusher
+@app.route("/eliminar/<int:id>", methods=["POST"])
+def eliminar(id):
     con = get_db_connection()
 
     if con is None:
@@ -169,12 +170,12 @@ def eliminar(telefono):
 
     try:
         cursor = con.cursor()
-        sql = "DELETE FROM tst0_cursos WHERE Telefono = %s"
-        cursor.execute(sql, (telefono,))
+        sql = "DELETE FROM tst0_cursos WHERE Id_Curso = %s"
+        cursor.execute(sql, (id,))
         con.commit()
 
         # Emitimos el evento con Pusher para notificar la eliminación
-        pusher_client.trigger("registros", "eliminar", {"telefono": telefono})
+        pusher_client.trigger("registros", "eliminar", {"id": id})
 
         return redirect("/registros")
 
