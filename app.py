@@ -35,17 +35,11 @@ def index():
 def alumnos():
     return render_template("alumnos.html")
 
-@app.route("/alumnos/guardar", methods=["POST"])
-def alumnosGuardar():
-    matricula = request.form["txtMatriculaFA"]
-    nombreapellido = request.form["txtNombreApellidoFA"]
-    
-    return f"Matrícula: {matricula} Nombre y Apellido: {nombreapellido}"
-
 # Registrar un nuevo curso y emitir evento con Pusher
-@app.route("/registrar", methods=["GET"])
+@app.route("/registrar", methods=["POST"])
 def registrar():
-    args = request.args
+    nombre = request.form.get("nombre_curso")
+    telefono = request.form.get("telefono")
     con = get_db_connection()
 
     if con is None:
@@ -54,44 +48,21 @@ def registrar():
     try:
         cursor = con.cursor()
         sql = "INSERT INTO tst0_cursos (Nombre_Curso, Telefono) VALUES (%s, %s)"
-        val = (args["Nombre"], args["Telefono"])
+        val = (nombre, telefono)
         cursor.execute(sql, val)
         con.commit()
 
         # Disparar evento con Pusher al agregar un nuevo registro
         pusher_client.trigger("registros", "nuevo", {
-            "nombre_curso": args["Nombre"],
-            "telefono": args["Telefono"]
+            "nombre_curso": nombre,
+            "telefono": telefono
         })
 
-        return jsonify(args), 200
+        return redirect("/registros")
 
     except Error as e:
         print(f"Error al insertar en la base de datos: {e}")
         return "Error al registrar datos", 500
-
-    finally:
-        cursor.close()
-        con.close()
-
-# Buscar registros
-@app.route("/buscar")
-def buscar():
-    con = get_db_connection()
-
-    if con is None:
-        return "Error en la conexión a la base de datos", 500
-
-    try:
-        cursor = con.cursor()
-        cursor.execute("SELECT * FROM tst0_cursos ORDER BY Id_Curso DESC")
-        registros = cursor.fetchall()
-
-        return jsonify({"registros": registros}), 200
-
-    except Error as e:
-        print(f"Error al buscar datos: {e}")
-        return "Error al buscar registros", 500
 
     finally:
         cursor.close()
@@ -126,8 +97,8 @@ def mostrar_registros():
 # Editar un registro existente y emitir evento con Pusher
 @app.route("/editar_registro/<int:id>", methods=["POST"])
 def editar_registro(id):
-    nuevo_nombre = request.form["nombre_curso"]
-    nuevo_telefono = request.form["telefono"]
+    nuevo_nombre = request.form.get("nombre_curso")
+    nuevo_telefono = request.form.get("telefono")
 
     con = get_db_connection()
     if con is None:
