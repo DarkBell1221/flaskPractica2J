@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registros de Cursos</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -29,6 +28,23 @@
 <body>
     <div class="container">
         <h1 class="mb-4 text-center">Lista de Cursos</h1>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <form action="/registrar" method="POST" class="row g-3">
+                    <div class="col-auto">
+                        <input type="text" name="nombre_curso" placeholder="Nombre del Curso" class="form-control" required>
+                    </div>
+                    <div class="col-auto">
+                        <input type="text" name="telefono" placeholder="Teléfono" class="form-control" required>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-success">Agregar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="card">
             <div class="card-body">
                 {% if registros %}
@@ -46,7 +62,6 @@
                             <tr>
                                 <td>{{ registro['Id_Curso'] }}</td>
                                 <td>
-                                    <!-- Formulario para editar el curso -->
                                     <form action="/editar_registro/{{ registro['Id_Curso'] }}" method="POST" class="d-inline">
                                         <input type="text" name="nombre_curso" value="{{ registro['Nombre_Curso'] }}" class="form-control" required>
                                 </td>
@@ -54,10 +69,10 @@
                                         <input type="text" name="telefono" value="{{ registro['Telefono'] }}" class="form-control" required>
                                 </td>
                                 <td>
-                                        <button type="submit" class="btn btn-primary btn-sm btn-space">Guardar</button>
+                                        <button type="button" class="btn btn-warning btn-sm btn-space editar" data-id="{{ registro['Id_Curso'] }}">Editar</button>
+                                        <button type="submit" class="btn btn-primary btn-sm btn-space guardar" style="display: none;">Guardar</button>
                                     </form>
 
-                                    <!-- Formulario para eliminar el curso -->
                                     <form action="/eliminar/{{ registro['Id_Curso'] }}" method="POST" class="d-inline">
                                         <button type="submit" class="btn btn-danger btn-sm btn-space">Eliminar</button>
                                     </form>
@@ -75,7 +90,37 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS y Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.editar').forEach(button => {
+            button.addEventListener('click', () => {
+                const row = button.closest('tr');
+                const form = row.querySelector('form');
+
+                // Cambiar a modo de edición
+                form.querySelectorAll('input').forEach(input => {
+                    input.disabled = false;
+                });
+                button.style.display = 'none'; // Ocultar botón de editar
+                const guardarBtn = row.querySelector('.guardar');
+                guardarBtn.style.display = 'inline-block'; // Mostrar botón de guardar
+            });
+        });
+
+        document.querySelectorAll('.guardar').forEach(button => {
+            button.addEventListener('click', () => {
+                const row = button.closest('tr');
+                const form = row.querySelector('form');
+
+                // Cambiar a modo de no edición
+                form.querySelectorAll('input').forEach(input => {
+                    input.disabled = true;
+                });
+                button.style.display = 'none'; // Ocultar botón de guardar
+                const editarBtn = row.querySelector('.editar');
+                editarBtn.style.display = 'inline-block'; // Mostrar botón de editar
+            });
+        });
+    </script>
 </body>
 </html>
