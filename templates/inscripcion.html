@@ -63,10 +63,10 @@
                                 <td>{{ registro['Id_Curso'] }}</td>
                                 <td>
                                     <form action="/editar_registro/{{ registro['Id_Curso'] }}" method="POST" class="d-inline">
-                                        <input type="text" name="nombre_curso" value="{{ registro['Nombre_Curso'] }}" class="form-control" required>
+                                        <input type="text" name="nombre_curso" value="{{ registro['Nombre_Curso'] }}" class="form-control" required disabled>
                                 </td>
                                 <td>
-                                        <input type="text" name="telefono" value="{{ registro['Telefono'] }}" class="form-control" required>
+                                        <input type="text" name="telefono" value="{{ registro['Telefono'] }}" class="form-control" required disabled>
                                 </td>
                                 <td>
                                         <button type="button" class="btn btn-warning btn-sm btn-space editar" data-id="{{ registro['Id_Curso'] }}">Editar</button>
@@ -99,7 +99,7 @@
 
                 // Cambiar a modo de edición
                 form.querySelectorAll('input').forEach(input => {
-                    input.disabled = false;
+                    input.disabled = false;  // Habilitar campos
                 });
                 button.style.display = 'none'; // Ocultar botón de editar
                 const guardarBtn = row.querySelector('.guardar');
@@ -114,11 +114,12 @@
 
                 // Cambiar a modo de no edición
                 form.querySelectorAll('input').forEach(input => {
-                    input.disabled = true;
+                    input.disabled = true; // Deshabilitar campos
                 });
                 button.style.display = 'none'; // Ocultar botón de guardar
                 const editarBtn = row.querySelector('.editar');
                 editarBtn.style.display = 'inline-block'; // Mostrar botón de editar
+                form.submit(); // Enviar el formulario
             });
         });
     </script>
