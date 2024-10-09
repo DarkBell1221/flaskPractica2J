@@ -120,7 +120,7 @@ def editar_registro(id):
             "telefono": nuevo_telefono
         })
 
-        return redirect("/registros")
+        return "Registro actualizado", 200
 
     except Error as e:
         print(f"Error al editar el registro: {e}")
@@ -129,6 +129,7 @@ def editar_registro(id):
     finally:
         cursor.close()
         con.close()
+
 
 
 # Eliminar un registro por Id y emitir evento con Pusher
