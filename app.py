@@ -6,13 +6,12 @@ from mysql.connector import Error
 # Conexión a la base de datos
 def get_db_connection():
     try:
-        con = mysql.connector.connect(
+        return mysql.connector.connect(
             host="185.232.14.52",
             database="u760464709_tst_sep",
             user="u760464709_tst_sep_usr",
             password="dJ0CIAFF="
         )
-        return con  # Devolver la conexión en caso de éxito
     except Error as e:
         print(f"Error conectando a la base de datos: {e}")
         return None
@@ -160,7 +159,7 @@ def editar_registro(id):
         cursor.close()
         con.close()
 
-# Eliminar un registro por Id_Curso y emitir evento con Pusher
+# Eliminar un registro por Id y emitir evento con Pusher
 @app.route("/eliminar/<int:id>", methods=["POST"])
 def eliminar(id):
     con = get_db_connection()
