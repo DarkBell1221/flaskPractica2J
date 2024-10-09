@@ -44,19 +44,21 @@
                         <tbody>
                             {% for registro in registros %}
                             <tr>
-                                <td>{{ registro['Id_Curso'] }}</td> <!-- Cambiar Id_Cursos a Id_Curso -->
-                                <td>{{ registro['Nombre_Curso'] }}</td>
-                                <td>{{ registro['Telefono'] }}</td>
+                                <td>{{ registro['Id_Curso'] }}</td>
                                 <td>
                                     <!-- Formulario para editar el curso -->
                                     <form action="/editar_registro/{{ registro['Id_Curso'] }}" method="POST" class="d-inline">
                                         <input type="text" name="nombre_curso" value="{{ registro['Nombre_Curso'] }}" class="form-control" required>
+                                </td>
+                                <td>
                                         <input type="text" name="telefono" value="{{ registro['Telefono'] }}" class="form-control" required>
+                                </td>
+                                <td>
                                         <button type="submit" class="btn btn-primary btn-sm btn-space">Guardar</button>
                                     </form>
 
-                                    <!-- Formulario para eliminar el curso, basado en el Id_Curso -->
-                                    <form action="/eliminar/{{ registro['Id_Curso'] }}" method="POST" class="d-inline"> <!-- Cambiado Telefono a Id_Curso -->
+                                    <!-- Formulario para eliminar el curso -->
+                                    <form action="/eliminar/{{ registro['Id_Curso'] }}" method="POST" class="d-inline">
                                         <button type="submit" class="btn btn-danger btn-sm btn-space">Eliminar</button>
                                     </form>
                                 </td>
