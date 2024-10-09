@@ -62,14 +62,14 @@
                             <tr>
                                 <td>{{ registro['Id_Curso'] }}</td>
                                 <td>
-                                    <form action="/editar_registro/{{ registro['Id_Curso'] }}" method="POST" class="d-inline">
+                                    <form action="/editar_registro/{{ registro['Id_Curso'] }}" method="POST" class="d-inline edit-form">
                                         <input type="text" name="nombre_curso" value="{{ registro['Nombre_Curso'] }}" class="form-control" required disabled>
                                 </td>
                                 <td>
                                         <input type="text" name="telefono" value="{{ registro['Telefono'] }}" class="form-control" required disabled>
                                 </td>
                                 <td>
-                                        <button type="button" class="btn btn-warning btn-sm btn-space editar" data-id="{{ registro['Id_Curso'] }}">Editar</button>
+                                        <button type="button" class="btn btn-warning btn-sm btn-space editar">Editar</button>
                                         <button type="submit" class="btn btn-primary btn-sm btn-space guardar" style="display: none;">Guardar</button>
                                     </form>
 
@@ -95,7 +95,7 @@
         document.querySelectorAll('.editar').forEach(button => {
             button.addEventListener('click', () => {
                 const row = button.closest('tr');
-                const form = row.querySelector('form');
+                const form = row.querySelector('form.edit-form');
 
                 // Cambiar a modo de edición
                 form.querySelectorAll('input').forEach(input => {
@@ -108,9 +108,10 @@
         });
 
         document.querySelectorAll('.guardar').forEach(button => {
-            button.addEventListener('click', () => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevenir el envío inmediato del formulario
                 const row = button.closest('tr');
-                const form = row.querySelector('form');
+                const form = row.querySelector('form.edit-form');
 
                 // Cambiar a modo de no edición
                 form.querySelectorAll('input').forEach(input => {
