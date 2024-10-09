@@ -62,7 +62,7 @@
                             <tr>
                                 <td>{{ registro['Id_Curso'] }}</td>
                                 <td>
-                                    <form action="/editar_registro/{{ registro['Id_Curso'] }}" method="POST" class="d-inline edit-form">
+                                    <form class="d-inline edit-form" data-id="{{ registro['Id_Curso'] }}">
                                         <input type="text" name="nombre_curso" value="{{ registro['Nombre_Curso'] }}" class="form-control" required disabled>
                                 </td>
                                 <td>
@@ -70,7 +70,7 @@
                                 </td>
                                 <td>
                                         <button type="button" class="btn btn-warning btn-sm btn-space editar">Editar</button>
-                                        <button type="submit" class="btn btn-primary btn-sm btn-space guardar" style="display: none;">Guardar</button>
+                                        <button type="button" class="btn btn-primary btn-sm btn-space guardar" style="display: none;">Guardar</button>
                                     </form>
 
                                     <form action="/eliminar/{{ registro['Id_Curso'] }}" method="POST" class="d-inline">
@@ -91,6 +91,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         document.querySelectorAll('.editar').forEach(button => {
             button.addEventListener('click', () => {
@@ -109,19 +110,35 @@
 
         document.querySelectorAll('.guardar').forEach(button => {
             button.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevenir el envío inmediato del formulario
                 const row = button.closest('tr');
                 const form = row.querySelector('form.edit-form');
+                const id = form.dataset.id; // Obtener el ID del curso
 
-                // Cambiar a modo de no edición
-                form.querySelectorAll('input').forEach(input => {
-                    input.disabled = true; // Deshabilitar campos
+                // Obtener los valores de los campos
+                const nuevoNombre = form.querySelector('input[name="nombre_curso"]').value;
+                const nuevoTelefono = form.querySelector('input[name="telefono"]').value;
+
+                // Enviar los datos a través de AJAX
+                $.ajax({
+                    url: `/editar_registro/${id}`,
+                    method: 'POST',
+                    data: {
+                        nombre_curso: nuevoNombre,
+                        telefono: nuevoTelefono
+                    },
+                    success: function() {
+                        // Cambiar a modo de no edición
+                        form.querySelectorAll('input').forEach(input => {
+                            input.disabled = true; // Deshabilitar campos
+                        });
+                        button.style.display = 'none'; // Ocultar botón de guardar
+                        const editarBtn = row.querySelector('.editar');
+                        editarBtn.style.display = 'inline-block'; // Mostrar botón de editar
+                    },
+                    error: function() {
+                        alert("Error al guardar los datos.");
+                    }
                 });
-                button.style.display = 'none'; // Ocultar botón de guardar
-                const editarBtn = row.querySelector('.editar');
-                editarBtn.style.display = 'inline-block'; // Mostrar botón de editar
-                
-                form.submit(); // Enviar el formulario
             });
         });
     </script>
