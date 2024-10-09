@@ -97,8 +97,8 @@ def mostrar_registros():
 # Editar un registro existente y emitir evento con Pusher
 @app.route("/editar_registro/<int:id>", methods=["POST"])
 def editar_registro(id):
-    nuevo_nombre = request.form.get("nombre_curso")
-    nuevo_telefono = request.form.get("telefono")
+    nuevo_nombre = request.form["nombre_curso"]
+    nuevo_telefono = request.form["telefono"]
 
     con = get_db_connection()
     if con is None:
@@ -129,6 +129,7 @@ def editar_registro(id):
     finally:
         cursor.close()
         con.close()
+
 
 # Eliminar un registro por Id y emitir evento con Pusher
 @app.route("/eliminar/<int:id>", methods=["POST"])
