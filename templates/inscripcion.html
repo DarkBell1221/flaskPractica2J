@@ -62,16 +62,7 @@
                             <tr>
                                 <td>{{ registro['Id_Curso'] }}</td>
                                 <td>
-                                    <form class="d-inline edit-form" data-id="{{ registro['Id_Curso'] }}">
-                                        <input type="text" name="nombre_curso" value="{{ registro['Nombre_Curso'] }}" class="form-control" required disabled>
-                                </td>
-                                <td>
-                                        <input type="text" name="telefono" value="{{ registro['Telefono'] }}" class="form-control" required disabled>
-                                </td>
-                                <td>
-                                        <button type="button" class="btn btn-warning btn-sm btn-space editar">Editar</button>
-                                        <button type="button" class="btn btn-primary btn-sm btn-space guardar" style="display: none;">Guardar</button>
-                                    </form>
+                                    
 
                                     <form action="/eliminar/{{ registro['Id_Curso'] }}" method="POST" class="d-inline">
                                         <button type="submit" class="btn btn-danger btn-sm btn-space">Eliminar</button>
