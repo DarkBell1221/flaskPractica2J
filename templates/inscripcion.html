@@ -61,9 +61,15 @@
                             {% for registro in registros %}
                             <tr>
                                 <td>{{ registro['Id_Curso'] }}</td>
+                                <td>{{ registro['Nombre_Curso'] }}</td>
+                                <td>{{ registro['Telefono'] }}</td>
                                 <td>
-                                    
-
+                                    <form action="/editar_registro/{{ registro['Id_Curso'] }}" method="POST" class="d-inline edit-form" data-id="{{ registro['Id_Curso'] }}">
+                                        <input type="text" name="nombre_curso" value="{{ registro['Nombre_Curso'] }}" class="form-control d-inline" disabled>
+                                        <input type="text" name="telefono" value="{{ registro['Telefono'] }}" class="form-control d-inline" disabled>
+                                        <button type="button" class="btn btn-primary btn-sm editar btn-space">Editar</button>
+                                        <button type="submit" class="btn btn-success btn-sm guardar btn-space" style="display: none;">Guardar</button>
+                                    </form>
                                     <form action="/eliminar/{{ registro['Id_Curso'] }}" method="POST" class="d-inline">
                                         <button type="submit" class="btn btn-danger btn-sm btn-space">Eliminar</button>
                                     </form>
@@ -130,6 +136,8 @@
                         alert("Error al guardar los datos.");
                     }
                 });
+
+                event.preventDefault();  // Evitar que el formulario se envíe de forma normal
             });
         });
     </script>
