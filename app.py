@@ -30,7 +30,7 @@ pusher_client = pusher.Pusher(
 # Ruta principal
 @app.route("/")
 def index():
-    return render_template("app.html")
+    return render_template("inscripcion.html")
 
 # Ruta para registrar un nuevo curso
 @app.route("/registrar", methods=["POST"])
