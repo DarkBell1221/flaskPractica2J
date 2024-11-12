@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, jsonify, redirect
+from flask import Flask, render_template, request, redirect
 import mysql.connector
 import pusher
 from mysql.connector import Error
+
+app = Flask(__name__)
 
 # Conexión a la base de datos
 def get_db_connection():
@@ -16,8 +18,6 @@ def get_db_connection():
         print(f"Error conectando a la base de datos: {e}")
         return None
 
-app = Flask(__name__)
-
 # Configuración de Pusher
 pusher_client = pusher.Pusher(
     app_id='1868490',
@@ -27,15 +27,12 @@ pusher_client = pusher.Pusher(
     ssl=True
 )
 
+# Ruta principal
 @app.route("/")
 def index():
     return render_template("app.html")
 
-@app.route("/alumnos")
-def alumnos():
-    return render_template("alumnos.html")
-
-# Registrar un nuevo curso y emitir evento con Pusher
+# Ruta para registrar un nuevo curso
 @app.route("/registrar", methods=["POST"])
 def registrar():
     nombre = request.form.get("nombre_curso")
@@ -52,7 +49,7 @@ def registrar():
         cursor.execute(sql, val)
         con.commit()
 
-        # Disparar evento con Pusher al agregar un nuevo registro
+        # Emitir evento con Pusher
         pusher_client.trigger("registros", "nuevo", {
             "nombre_curso": nombre,
             "telefono": telefono
@@ -68,7 +65,7 @@ def registrar():
         cursor.close()
         con.close()
 
-# Mostrar registros
+# Ruta para mostrar todos los registros
 @app.route("/registros")
 def mostrar_registros():
     con = get_db_connection()
@@ -81,9 +78,6 @@ def mostrar_registros():
         cursor.execute("SELECT Id_Curso, Nombre_Curso, Telefono FROM tst0_cursos")
         registros = cursor.fetchall()
 
-        # Debug: Ver los registros en la consola
-        print(f"Registros recuperados: {registros}")
-
         return render_template("inscripcion.html", registros=registros)
 
     except Error as e:
@@ -94,7 +88,7 @@ def mostrar_registros():
         cursor.close()
         con.close()
 
-# Editar un registro existente y emitir evento con Pusher
+# Ruta para editar un registro existente
 @app.route("/editar_registro/<int:id>", methods=["POST"])
 def editar_registro(id):
     nuevo_nombre = request.form["nombre_curso"]
@@ -113,7 +107,7 @@ def editar_registro(id):
         """, (nuevo_nombre, nuevo_telefono, id))
         con.commit()
 
-        # Emitimos el evento con Pusher para notificar la edición
+        # Emitir evento de edición con Pusher
         pusher_client.trigger("registros", "editar", {
             "id": id,
             "nombre_curso": nuevo_nombre,
@@ -130,9 +124,7 @@ def editar_registro(id):
         cursor.close()
         con.close()
 
-
-
-# Eliminar un registro por Id y emitir evento con Pusher
+# Ruta para eliminar un registro
 @app.route("/eliminar/<int:id>", methods=["POST"])
 def eliminar(id):
     con = get_db_connection()
@@ -146,7 +138,7 @@ def eliminar(id):
         cursor.execute(sql, (id,))
         con.commit()
 
-        # Emitimos el evento con Pusher para notificar la eliminación
+        # Emitir evento de eliminación con Pusher
         pusher_client.trigger("registros", "eliminar", {"id": id})
 
         return redirect("/registros")
