@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 import mysql.connector
 import pusher
 from mysql.connector import Error
@@ -114,7 +114,7 @@ def editar_registro(id):
             "telefono": nuevo_telefono
         })
 
-        return "Registro actualizado", 200
+        return redirect("/registros")
 
     except Error as e:
         print(f"Error al editar el registro: {e}")
