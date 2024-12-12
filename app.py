@@ -4,8 +4,7 @@ const pusher = new Pusher('e1d8c501f1496bf4614e', {
 });
 
 const channel = pusher.subscribe('registros');
-
-// Escucha para nuevos registros
+function hello (registros) {
 channel.bind('nuevo', function(data) {
     const tableBody = document.querySelector("#registros tbody");
     const newRow = document.createElement("tr");
@@ -20,6 +19,11 @@ channel.bind('nuevo', function(data) {
     `;
     tableBody.appendChild(newRow);
 });
+return registros;
+
+}
+// Escucha para nuevos registros
+
 
 // Escucha para ediciones
 channel.bind('editar', function(data) {
