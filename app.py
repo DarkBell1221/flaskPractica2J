@@ -4,7 +4,7 @@ const pusher = new Pusher('e1d8c501f1496bf4614e', {
 });
 
 const channel = pusher.subscribe('registros');
-function hello (registros) {
+function re(registros) {
 channel.bind('nuevo', function(data) {
     const tableBody = document.querySelector("#registros tbody");
     const newRow = document.createElement("tr");
